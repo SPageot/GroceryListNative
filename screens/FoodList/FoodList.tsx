@@ -12,7 +12,7 @@ const FoodListContainer = styled(View)`
 `;
 
 const SubmitFoodContainer = styled(View)`
-  height: 10%;
+  height: 15%;
   width: 100%;
   flex-direction: row;
   justify-content: center;
@@ -54,7 +54,9 @@ const FoodList = () => {
             onChangeText={handleChange}
             defaultValue={foodItemName}
           />
-          <AppButton color="navy" title="Add" onPress={handlePress} />
+          {foodItemName ? (
+            <AppButton color="navy" title="Add" onPress={handlePress} />
+          ) : null}
         </SubmitFoodContainer>
       </FoodListContainer>
     </KeyboardAvoidingView>
