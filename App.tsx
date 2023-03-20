@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native";
 import styled from "styled-components";
 import FoodList from "./screens/FoodList/FoodList";
 

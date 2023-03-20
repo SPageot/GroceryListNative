@@ -6,12 +6,14 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest"
   },
   "dependencies": {
     "@types/lodash": "^4.14.191",
     "@types/styled-components": "^5.1.26",
     "expo": "~48.0.6",
+    "expo-linear-gradient": "^12.1.2",
     "expo-status-bar": "~1.4.4",
     "lodash": "^4.17.21",
     "react": "18.2.0",
@@ -22,7 +24,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@testing-library/jest-native": "^5.4.2",
+    "@testing-library/react-native": "^12.0.0",
+    "@types/jest": "^29.5.0",
     "@types/react": "~18.0.14",
+    "@types/react-test-renderer": "^18.0.0",
+    "jest-expo": "^48.0.2",
+    "react-test-renderer": "^18.2.0",
     "typescript": "^4.9.4"
   },
   "private": true

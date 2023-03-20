@@ -9,7 +9,6 @@ import { AppButton } from "./AppButton";
 const FoodsContainer = styled(ScrollView)`
   height: 90%;
   width: 100%;
-  background-color: #0077b6;
 `;
 const DeleteContainer = styled(View)`
   justify-content: center;
@@ -23,7 +22,7 @@ const FoodItemContainer = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: blue;
+  background-color: #0abab5;
 `;
 
 const FoodItem = styled(Text)`
@@ -44,14 +43,14 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   return (
     <FoodsContainer>
       {!_.isEmpty(foodItemsArray)
-        ? foodItemsArray.map((item, i) => {
+        ? foodItemsArray?.map((item, i) => {
             return (
               <Swipeable
                 renderRightActions={() => swipeRightAction(item)}
                 key={i}
               >
                 <FoodItemContainer>
-                  <FoodItem>{item}</FoodItem>
+                  <FoodItem role="contentinfo">{item}</FoodItem>
                 </FoodItemContainer>
               </Swipeable>
             );
@@ -61,4 +60,4 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   );
 };
 
-export default FoodItems;
+export { FoodItems };

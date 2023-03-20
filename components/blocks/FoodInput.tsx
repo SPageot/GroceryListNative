@@ -6,7 +6,8 @@ import { FoodInputType } from "../../types/types";
 const FoodInputName = styled(TextInput)`
   height: 40px;
   width: 75%;
-  border: 1px solid black;
+  border: 1px solid #fff;
+  color: #fff;
 `;
 
 const FoodInput = ({

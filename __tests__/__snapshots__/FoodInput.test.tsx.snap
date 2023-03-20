@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Food Input should render correctly 1`] = `
+<TextInput
+  className="sc-beqWaB dZHoAW"
+  defaultValue="value"
+  onChangeText={[MockFunction]}
+  placeholder="value"
+/>
+`;
