@@ -9,6 +9,7 @@ import { AppButton } from "./AppButton";
 const FoodsContainer = styled(ScrollView)`
   height: 90%;
   width: 100%;
+  background-color: #0f4d92;
 `;
 const DeleteContainer = styled(View)`
   justify-content: center;
@@ -22,7 +23,7 @@ const FoodItemContainer = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: #0abab5;
+  background-color: #007fff;
 `;
 
 const FoodItem = styled(Text)`

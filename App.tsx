@@ -1,5 +1,6 @@
 import { SafeAreaView } from "react-native";
 import styled from "styled-components";
+import { NavBar } from "./components/navigation/NavBar";
 import FoodList from "./screens/FoodList/FoodList";
 
 const AppContainer = styled(SafeAreaView)`
@@ -11,6 +12,7 @@ export default function App() {
   return (
     <AppContainer>
       <FoodList />
+      <NavBar />
     </AppContainer>
   );
 }

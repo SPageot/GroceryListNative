@@ -4,13 +4,13 @@ import { FoodItems } from "../../components/blocks/FoodItems";
 import styled from "styled-components";
 import { FoodInput } from "../../components/blocks/FoodInput";
 import { AppButton } from "../../components/blocks/AppButton";
-import { LinearGradient } from "expo-linear-gradient";
 
 const FoodListContainer = styled(View)`
-  height: 100%;
+  height: 90%;
   width: 100%;
   flex-direction: column-reverse;
   align-items: center;
+  background-color: #123524;
 `;
 
 const SubmitFoodContainer = styled(View)`
@@ -20,17 +20,8 @@ const SubmitFoodContainer = styled(View)`
   justify-content: center;
   align-items: center;
   gap: 30px;
-  background-color: #0067a5;
+  background-color: #191970;
 `;
-
-const linearGradientStyle = StyleSheet.create({
-  container: {
-    height: "100%",
-    width: "100%",
-    flexDirection: "column-reverse",
-    alignItems: "center",
-  },
-});
 
 const FoodList = () => {
   const [foodItemName, setFoodItemName] = useState<string>("");
@@ -53,29 +44,19 @@ const FoodList = () => {
     setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
   };
   return (
-    <KeyboardAvoidingView behavior="height">
-      <LinearGradient
-        colors={["#0067A5", "#0067A5", "#007FFF"]}
-        style={linearGradientStyle.container}
-      >
-        <FoodListContainer>
-          <FoodItems
-            foodItemsArray={foodItemsArray}
-            onPress={handleDeletePress}
-          />
-          <SubmitFoodContainer>
-            <FoodInput
-              placeholder="Enter Food Name"
-              onChangeText={handleChange}
-              defaultValue={foodItemName}
-            />
-            {foodItemName ? (
-              <AppButton color="navy" title="Add" onPress={handlePress} />
-            ) : null}
-          </SubmitFoodContainer>
-        </FoodListContainer>
-      </LinearGradient>
-    </KeyboardAvoidingView>
+    <FoodListContainer>
+      <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />
+      <SubmitFoodContainer>
+        <FoodInput
+          placeholder="Enter Food Name"
+          onChangeText={handleChange}
+          defaultValue={foodItemName}
+        />
+        {foodItemName ? (
+          <AppButton color="#fff" title="Add" onPress={handlePress} />
+        ) : null}
+      </SubmitFoodContainer>
+    </FoodListContainer>
   );
 };
 
