@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import React, { useState } from "react";
 import { FoodItems } from "../../components/blocks/FoodItems";
 import styled from "styled-components";
@@ -6,7 +6,7 @@ import { FoodInput } from "../../components/blocks/FoodInput";
 import { AppButton } from "../../components/blocks/AppButton";
 
 const FoodListContainer = styled(View)`
-  height: 90%;
+  height: 100%;
   width: 100%;
   flex-direction: column-reverse;
   align-items: center;

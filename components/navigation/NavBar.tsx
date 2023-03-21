@@ -1,8 +1,10 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBook, faList } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation } from "@react-navigation/core";
+import { NavigationStackProp } from "react-navigation-stack";
 
 const NavBarContainer = styled(View)`
   height: 10%;
@@ -13,11 +15,7 @@ const NavBarContainer = styled(View)`
   align-items: center;
 `;
 
-const IconContainer = styled(View)`
-  height: 100%;
-  width: 50%;
-  justify-content: center;
-  align-items: center;
+const IconContainer = styled(Pressable)`
   gap: 10px;
 `;
 
@@ -26,13 +24,14 @@ const IconName = styled(Text)`
 `;
 
 const NavBar = () => {
+  const navigation: NavigationStackProp = useNavigation();
   return (
     <NavBarContainer>
-      <IconContainer>
+      <IconContainer onPress={() => navigation.navigate("Foodlist")}>
         <FontAwesomeIcon size={30} color="#fff" icon={faList} />
-        <IconName>Grocery List</IconName>
+        <IconName>Food List</IconName>
       </IconContainer>
-      <IconContainer>
+      <IconContainer onPress={() => navigation.navigate("Reminders")}>
         <FontAwesomeIcon size={30} color="#fff" icon={faBook} />
         <IconName>Reminder</IconName>
       </IconContainer>
