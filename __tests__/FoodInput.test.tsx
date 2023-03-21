@@ -1,5 +1,5 @@
 import React from "react";
-import { FoodInput } from "../components/blocks/FoodInput";
+import { FoodInput } from "../components/form/Input";
 import TestRenderer from "react-test-renderer";
 
 describe("Food Input", () => {

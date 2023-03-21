@@ -2,7 +2,7 @@ import { View } from "react-native";
 import React, { useState } from "react";
 import { FoodItems } from "../../components/blocks/FoodItems";
 import styled from "styled-components";
-import { FoodInput } from "../../components/blocks/FoodInput";
+import { Input } from "../../components/form/Input";
 import { AppButton } from "../../components/blocks/AppButton";
 
 const FoodListContainer = styled(View)`
@@ -10,7 +10,6 @@ const FoodListContainer = styled(View)`
   width: 100%;
   flex-direction: column-reverse;
   align-items: center;
-  background-color: #123524;
 `;
 
 const SubmitFoodContainer = styled(View)`
@@ -47,7 +46,8 @@ const FoodList = () => {
     <FoodListContainer>
       <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />
       <SubmitFoodContainer>
-        <FoodInput
+        <Input
+          type="default"
           placeholder="Enter Food Name"
           onChangeText={handleChange}
           defaultValue={foodItemName}
