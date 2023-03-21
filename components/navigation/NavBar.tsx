@@ -16,6 +16,7 @@ const NavBarContainer = styled(View)`
 `;
 
 const IconContainer = styled(Pressable)`
+  align-items: center;
   gap: 10px;
 `;
 
