@@ -1,7 +1,7 @@
 import { View, Text, Button, Pressable } from "react-native";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ReminderBox } from "../../components/blocks/ReminderBox";
+import { ReminderBox } from "../components/blocks/ReminderBox";
 
 const RemindersContainer = styled(View)`
   height: 100%;

@@ -1,9 +1,9 @@
 import { View } from "react-native";
 import React, { useState } from "react";
-import { FoodItems } from "../../components/blocks/FoodItems";
+import { FoodItems } from "../components/blocks/FoodItems";
 import styled from "styled-components";
-import { Input } from "../../components/form/Input";
-import { AppButton } from "../../components/blocks/AppButton";
+import { Input } from "../components/form/Input";
+import { AppButton } from "../components/blocks/AppButton";
 
 const FoodListContainer = styled(View)`
   height: 100%;

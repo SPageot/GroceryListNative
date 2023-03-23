@@ -4,8 +4,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native";
 import styled from "styled-components";
 import { NavBar } from "./components/navigation/NavBar";
-import FoodList from "./screens/FoodList/FoodList";
-import Reminders from "./screens/FoodList/Reminders";
+import FoodList from "./screens/FoodList";
+import Login from "./screens/Login";
+import Reminders from "./screens/Reminders";
 
 const AppContainer = styled(SafeAreaView)`
   height: 100%;
@@ -13,7 +14,7 @@ const AppContainer = styled(SafeAreaView)`
 `;
 
 const client = new ApolloClient({
-  uri: "localhost:3005/graphql",
+  uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache(),
 });
 
@@ -25,6 +26,11 @@ export default function App() {
       <NavigationContainer>
         <AppContainer>
           <Stack.Navigator>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ title: "Login" }}
+            />
             <Stack.Screen
               name="Foodlist"
               component={FoodList}

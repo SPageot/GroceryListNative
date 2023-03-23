@@ -1,5 +1,6 @@
 export interface PropType {
-  type: "reminders" | "default";
+  type?: "reminders" | "default";
+  shouldExpand?: boolean;
 }
 
 export interface ReminderProps {

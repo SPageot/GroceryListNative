@@ -23,7 +23,7 @@ const FoodInputName = styled(TextInput)`
 `;
 
 const Input = ({
-  type = "default",
+  type,
   placeholder,
   onChangeText,
   defaultValue,
