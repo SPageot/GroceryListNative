@@ -1,11 +1,14 @@
 import { View, Text, KeyboardAvoidingView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
 import { PropType } from "../types/types";
 import { useMutation } from "@apollo/client";
 import { ADD_USER, LOGIN_USER } from "../mutations/loginMutation";
+import { useStore } from "../store/store";
+import { NavigationStackProp } from "react-navigation-stack";
+import { useNavigation } from "@react-navigation/core";
 
 const LoginContainer = styled(View)`
   height: 100%;
@@ -44,7 +47,9 @@ const ButtonContainer = styled(View)`
 `;
 
 const Login = () => {
+  const { user } = useStore((state) => state);
   const [willRegister, setWillRegister] = useState<boolean>();
+  const navigation: NavigationStackProp = useNavigation();
   const [login, setLogin] = useState({
     name: "",
     email: "",
@@ -54,6 +59,16 @@ const Login = () => {
   const [addUser] = useMutation(ADD_USER, {
     variables: login,
   });
+  const [userLogin, { data }] = useMutation(LOGIN_USER, {
+    variables: { email: login.email, password: login.password },
+  });
+
+  useEffect(() => {
+    if (data) {
+      useStore.setState({ user: data });
+      navigation.navigate("Foodlist");
+    }
+  }, [data]);
 
   const handleNameChange = (text: string): void => {
     if (text) {
@@ -95,7 +110,7 @@ const Login = () => {
 
   const handleLogInPress = () => {
     if (login.email && login.password) {
-      console.log(login.email, login.password);
+      userLogin(login.email, login.password);
     }
   };
 

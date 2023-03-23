@@ -14,6 +14,17 @@ const ADD_USER = gql`
   }
 `;
 
+const UPDATE_REMINDERS = gql`
+  mutation UpdateReminders($email: String!, $reminders: [ReminderInput]) {
+    updateReminders(email: $email, reminders: $reminders) {
+      reminders {
+        reminderHeader
+        reminder
+      }
+    }
+  }
+`;
+
 const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $password: String!) {
     loginUser(email: $email, password: $password) {
@@ -28,4 +39,4 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { ADD_USER, LOGIN_USER };
+export { ADD_USER, LOGIN_USER, UPDATE_REMINDERS };

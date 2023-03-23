@@ -1,12 +1,16 @@
 import { gql } from "@apollo/client";
 
-const ALL_USERS = gql`
-  query getAllUser {
-    allUser {
-      name
+const USER = gql`
+  query user($email: String!) {
+    user(email: $email) {
       email
+      groceryList
+      reminders {
+        reminder
+        reminderHeader
+      }
     }
   }
 `;
 
-export { ALL_USERS };
+export { USER };

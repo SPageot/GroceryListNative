@@ -4,6 +4,7 @@ import { FoodItems } from "../components/blocks/FoodItems";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
+import { useStore } from "../store/store";
 
 const FoodListContainer = styled(View)`
   height: 100%;

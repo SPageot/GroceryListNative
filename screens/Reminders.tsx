@@ -1,7 +1,12 @@
-import { View, Text, Button, Pressable } from "react-native";
-import React, { useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReminderBox } from "../components/blocks/ReminderBox";
+import { useMutation, useQuery } from "@apollo/client";
+import { UPDATE_REMINDERS } from "../mutations/loginMutation";
+import { useStore } from "../store/store";
+import { ReminderType } from "../types/types";
+import { USER } from "../mutations/query";
 
 const RemindersContainer = styled(View)`
   height: 100%;
@@ -27,12 +32,53 @@ const AddIcon = styled(Text)`
   font-size: 30px;
 `;
 
+const SavedReminderContainer = styled(View)`
+  height: 90%;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
+const SavedReminders = styled(View)`
+  height: 10%;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #007fff;
+`;
+
+const SavedReminderText = styled(Text)`
+  color: #fff;
+  font-size: 30px;
+`;
+
 const Reminders = (): JSX.Element => {
+  const { user } = useStore((state) => state);
+  const { data } = useQuery(USER, {
+    variables: { email: user?.loginUser?.email },
+    pollInterval: 20,
+  });
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
+  const [reminderArray, setReminderArray] = useState();
   const [reminderMessage, setReminderMessage] = useState({
     reminderHeader: "",
     reminder: "",
   });
+  const [updateReminders] = useMutation(UPDATE_REMINDERS, {
+    refetchQueries: [
+      {
+        query: USER,
+        variables: { email: user?.loginUser?.email },
+      },
+    ],
+  });
+
+  useEffect(() => {
+    if (data?.user) {
+      setReminderArray(data?.user.reminders);
+    }
+  }, [data?.user, reminderArray]);
 
   const handlePress = (): void => {
     setIsModalOpen(true);
@@ -54,11 +100,34 @@ const Reminders = (): JSX.Element => {
     setIsModalOpen(false);
   };
 
-  const handleSubmitPress = (): void => {
-    console.log(reminderMessage)
+  const handleSubmitPress = async (): Promise<void> => {
+    if (user?.loginUser) {
+      updateReminders({
+        variables: {
+          email: data?.user.email,
+          reminders: [...reminderArray, reminderMessage],
+        },
+      });
+      setReminderMessage({ reminder: "", reminderHeader: "" });
+      setIsModalOpen(false);
+    }
   };
+
   return (
     <RemindersContainer>
+      <SavedReminderContainer>
+        {data && data.user
+          ? data.user.reminders.map((reminder: ReminderType, i: number) => {
+              return (
+                <SavedReminders key={i}>
+                  <SavedReminderText>
+                    {reminder.reminderHeader}
+                  </SavedReminderText>
+                </SavedReminders>
+              );
+            })
+          : null}
+      </SavedReminderContainer>
       <AddReminder onPress={handlePress}>
         <AddIcon>+</AddIcon>
       </AddReminder>

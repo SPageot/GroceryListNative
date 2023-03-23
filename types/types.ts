@@ -29,3 +29,24 @@ export interface SubmitType {
   title: string;
   color: string;
 }
+
+export interface ReminderType {
+  reminder: string;
+  reminderHeader: string;
+}
+
+export interface UserInfoType {
+  __typename: string;
+  email: string;
+  groceryList: string[] | null;
+  name: string;
+  reminders: ReminderType;
+}
+
+export interface UserType {
+  loginUser?: UserInfoType;
+}
+
+export interface StoreType {
+  user: UserType;
+}

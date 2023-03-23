@@ -7,6 +7,7 @@ import { NavBar } from "./components/navigation/NavBar";
 import FoodList from "./screens/FoodList";
 import Login from "./screens/Login";
 import Reminders from "./screens/Reminders";
+import { useStore } from "./store/store";
 
 const AppContainer = styled(SafeAreaView)`
   height: 100%;
@@ -15,12 +16,14 @@ const AppContainer = styled(SafeAreaView)`
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({ addTypename: false }),
 });
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const { user } = useStore((state) => state);
+
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
@@ -42,7 +45,7 @@ export default function App() {
               options={{ title: "Reminders" }}
             />
           </Stack.Navigator>
-          <NavBar />
+          {user?.loginUser ? <NavBar /> : null}
         </AppContainer>
       </NavigationContainer>
     </ApolloProvider>
