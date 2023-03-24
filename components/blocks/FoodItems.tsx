@@ -21,10 +21,9 @@ const DeleteContainer = styled(View)`
   background-color: red;
 `;
 
-const FoodItemContainer = styled(View)`
+const FoodItemContainer = styled(ScrollView)`
   width: 100%;
   padding: 10px;
-  align-items: center;
   background-color: #007fff;
   ${(props: PropType) =>
     !props.pastGroceryList
@@ -34,6 +33,7 @@ const FoodItemContainer = styled(View)`
           justify-content: space-between;
         `
       : css`
+          padding: 0px;
           height: 200px;
           flex-direction: column;
           margin-bottom: 20px;
@@ -42,7 +42,15 @@ const FoodItemContainer = styled(View)`
 
 const FoodItem = styled(Text)`
   color: #fff;
-  font-size: 17px;
+
+  ${(props: PropType) =>
+    !props.pastGroceryList
+      ? css`
+          font-size: 17px;
+        `
+      : css`
+          font-size: 30px;
+        `};
 `;
 
 const LoadingContainer = styled(View)`
@@ -110,7 +118,7 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
             return (
               <FoodItemContainer key={i} pastGroceryList>
                 {list?.map((pastItem, i: number) => (
-                  <FoodItem key={i} role="contentinfo">
+                  <FoodItem pastGroceryList key={i} role="contentinfo">
                     {pastItem}
                   </FoodItem>
                 ))}
