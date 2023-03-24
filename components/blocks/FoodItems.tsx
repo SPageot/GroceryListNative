@@ -1,12 +1,15 @@
+import { useQuery } from "@apollo/client";
 import _ from "lodash";
 import React, { useContext } from "react";
+import styled, { css } from "styled-components";
+
 import { ScrollView, Text, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import styled from "styled-components";
 import { UserStateContext } from "../../hooks/useAuth";
-
-import { FoodItemType } from "../../types/types";
+import { USER } from "../../mutations/query";
+import { FoodItemType, PropType } from "../../types/types";
 import { AppButton } from "./AppButton";
+import { Bullets } from "react-native-easy-content-loader";
 
 const FoodsContainer = styled(ScrollView)`
   height: 80%;
@@ -19,23 +22,40 @@ const DeleteContainer = styled(View)`
 `;
 
 const FoodItemContainer = styled(View)`
-  height: 80px;
   width: 100%;
   padding: 10px;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   background-color: #007fff;
+  ${(props: PropType) =>
+    !props.pastGroceryList
+      ? css`
+          height: 80px;
+          flex-direction: row;
+          justify-content: space-between;
+        `
+      : css`
+          height: 200px;
+          flex-direction: column;
+          margin-bottom: 20px;
+        `};
 `;
 
 const FoodItem = styled(Text)`
   color: #fff;
   font-size: 17px;
-  width: 80%;
+`;
+
+const LoadingContainer = styled(View)`
+  height: 100%;
+  width: 100%;
+  padding: 20px;
 `;
 
 const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   const { user } = useContext(UserStateContext);
+  const { data, loading } = useQuery(USER, {
+    variables: { email: user?.loginUser?.email },
+  });
 
   const swipeRightAction = (item: string) => {
     return (
@@ -44,6 +64,32 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
       </DeleteContainer>
     );
   };
+
+  if (loading)
+    return (
+      <FoodsContainer>
+        <LoadingContainer>
+          <Bullets
+            titleStyles={{ height: "90%", width: "100%" }}
+            active
+            avatar
+            loading={loading}
+          />
+          <Bullets
+            titleStyles={{ height: "90%", width: "100%" }}
+            active
+            avatar
+            loading={loading}
+          />
+          <Bullets
+            titleStyles={{ height: "90%", width: "100%" }}
+            active
+            avatar
+            loading={loading}
+          />
+        </LoadingContainer>
+      </FoodsContainer>
+    );
 
   return (
     <FoodsContainer>
@@ -60,7 +106,17 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
               </Swipeable>
             );
           })
-        : null}
+        : data?.user?.groceryLists.map((list, i: number) => {
+            return (
+              <FoodItemContainer key={i} pastGroceryList>
+                {list?.map((pastItem, i: number) => (
+                  <FoodItem key={i} role="contentinfo">
+                    {pastItem}
+                  </FoodItem>
+                ))}
+              </FoodItemContainer>
+            );
+          })}
     </FoodsContainer>
   );
 };

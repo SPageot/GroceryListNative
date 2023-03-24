@@ -1,6 +1,8 @@
 export interface PropType {
   type?: "reminders" | "default";
   shouldExpand?: boolean;
+  pastGroceryList?: boolean;
+  isSavedButton?: boolean;
 }
 
 export interface ReminderProps {

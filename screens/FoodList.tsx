@@ -1,14 +1,15 @@
 import { Pressable, View, Text } from "react-native";
 import React, { useContext, useState } from "react";
 import { FoodItems } from "../components/blocks/FoodItems";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { UPDATE_GROCERYLIST } from "../mutations/loginMutation";
 import { USER } from "../mutations/query";
 import { UserStateContext } from "../hooks/useAuth";
 import _ from "lodash";
+import { PropType } from "../types/types";
 
 const FoodListContainer = styled(View)`
   height: 100%;
@@ -27,9 +28,10 @@ const SubmitFoodContainer = styled(View)`
   background-color: #191970;
 `;
 
-const SaveFoodListContainer = styled(Pressable)`
+const SaveFoodListContainer = styled(View)`
   height: 10%;
   width: 100%;
+  flex-direction: row;
   background-color: lightblue;
   justify-content: center;
 `;
@@ -40,10 +42,27 @@ const SaveFoodListText = styled(Text)`
   text-align: center;
 `;
 
+const FoodListOption = styled(Pressable)`
+  height: 100%;
+  width: 50%;
+  justify-content: center;
+  ${(props: PropType) =>
+    props.isSavedButton
+      ? css`
+          background-color: blue;
+        `
+      : css`
+          background-color: red;
+        `}
+`;
+
 const FoodList = () => {
   const [foodItemName, setFoodItemName] = useState<string>("");
   const [foodItemsArray, setFoodItemsArray] = useState<string[]>([]);
   const { user } = useContext(UserStateContext);
+  const { data, loading } = useQuery(USER, {
+    variables: { email: user?.loginUser?.email },
+  });
   const [updateGroceryList] = useMutation(UPDATE_GROCERYLIST, {
     refetchQueries: [
       {
@@ -70,20 +89,28 @@ const FoodList = () => {
     updateGroceryList({
       variables: {
         email: user?.loginUser.email,
-        groceryLists: [foodItemsArray],
+        groceryLists: [...data.user.groceryLists, foodItemsArray],
       },
     });
     setFoodItemsArray([]);
   };
 
+  const handleResetListPress = () => {
+    setFoodItemsArray([]);
+  };
   const handleDeletePress = (deletedItem: string) => {
     setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
   };
   return (
     <FoodListContainer>
       {!_.isEmpty(foodItemsArray) ? (
-        <SaveFoodListContainer onPress={handleSaveListPress}>
-          <SaveFoodListText>Save List</SaveFoodListText>
+        <SaveFoodListContainer>
+          <FoodListOption isSavedButton onPress={handleSaveListPress}>
+            <SaveFoodListText>Save List</SaveFoodListText>
+          </FoodListOption>
+          <FoodListOption onPress={handleResetListPress}>
+            <SaveFoodListText>Reset List</SaveFoodListText>
+          </FoodListOption>
         </SaveFoodListContainer>
       ) : null}
       <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />

@@ -109,7 +109,7 @@ const Login = () => {
 
   const handleLogInPress = () => {
     if (login.email && login.password) {
-      userLogin(login.email, login.password);
+      userLogin(login.email, login.password).catch((err) => console.log(err));
     }
   };
 
