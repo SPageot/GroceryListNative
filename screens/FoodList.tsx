@@ -1,14 +1,14 @@
-import { View } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import React, { useContext, useState } from "react";
 import { FoodItems } from "../components/blocks/FoodItems";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
-import { useStore } from "../store/store";
 import { useMutation } from "@apollo/client";
 import { UPDATE_GROCERYLIST } from "../mutations/loginMutation";
 import { USER } from "../mutations/query";
 import { UserStateContext } from "../hooks/useAuth";
+import _ from "lodash";
 
 const FoodListContainer = styled(View)`
   height: 100%;
@@ -25,6 +25,19 @@ const SubmitFoodContainer = styled(View)`
   align-items: center;
   gap: 30px;
   background-color: #191970;
+`;
+
+const SaveFoodListContainer = styled(Pressable)`
+  height: 10%;
+  width: 100%;
+  background-color: lightblue;
+  justify-content: center;
+`;
+
+const SaveFoodListText = styled(Text)`
+  color: #fff;
+  font-size: 30px;
+  text-align: center;
 `;
 
 const FoodList = () => {
@@ -53,11 +66,26 @@ const FoodList = () => {
     }
   };
 
+  const handleSaveListPress = () => {
+    updateGroceryList({
+      variables: {
+        email: user?.loginUser.email,
+        groceryLists: [foodItemsArray],
+      },
+    });
+    setFoodItemsArray([]);
+  };
+
   const handleDeletePress = (deletedItem: string) => {
     setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
   };
   return (
     <FoodListContainer>
+      {!_.isEmpty(foodItemsArray) ? (
+        <SaveFoodListContainer onPress={handleSaveListPress}>
+          <SaveFoodListText>Save List</SaveFoodListText>
+        </SaveFoodListContainer>
+      ) : null}
       <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />
       <SubmitFoodContainer>
         <Input

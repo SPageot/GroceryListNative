@@ -26,10 +26,9 @@ const UPDATE_REMINDERS = gql`
 `;
 
 const UPDATE_GROCERYLIST = gql`
-  mutation updateGroceryList($email: String!, $groceryLists: [GroceryInput]) {
-    groceryLists {
-      item
-      count
+  mutation updateGroceryList($email: String!, $groceryLists: [[String]]) {
+    updateGroceryList(email: $email, groceryLists: $groceryLists) {
+      groceryLists
     }
   }
 `;
