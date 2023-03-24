@@ -1,14 +1,14 @@
 import { View, Text, KeyboardAvoidingView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
 import { PropType } from "../types/types";
 import { useMutation } from "@apollo/client";
 import { ADD_USER, LOGIN_USER } from "../mutations/loginMutation";
-import { useStore } from "../store/store";
 import { NavigationStackProp } from "react-navigation-stack";
 import { useNavigation } from "@react-navigation/core";
+import { UserStateContext } from "../hooks/useAuth";
 
 const LoginContainer = styled(View)`
   height: 100%;
@@ -47,15 +47,14 @@ const ButtonContainer = styled(View)`
 `;
 
 const Login = () => {
-  const { user } = useStore((state) => state);
   const [willRegister, setWillRegister] = useState<boolean>();
   const navigation: NavigationStackProp = useNavigation();
+  const { setUser } = useContext(UserStateContext);
   const [login, setLogin] = useState({
     name: "",
     email: "",
     password: "",
   });
-
   const [addUser] = useMutation(ADD_USER, {
     variables: login,
   });
@@ -65,7 +64,7 @@ const Login = () => {
 
   useEffect(() => {
     if (data) {
-      useStore.setState({ user: data });
+      setUser(data);
       navigation.navigate("Foodlist");
     }
   }, [data]);

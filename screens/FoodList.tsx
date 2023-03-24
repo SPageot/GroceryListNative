@@ -1,10 +1,14 @@
 import { View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FoodItems } from "../components/blocks/FoodItems";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
 import { useStore } from "../store/store";
+import { useMutation } from "@apollo/client";
+import { UPDATE_GROCERYLIST } from "../mutations/loginMutation";
+import { USER } from "../mutations/query";
+import { UserStateContext } from "../hooks/useAuth";
 
 const FoodListContainer = styled(View)`
   height: 100%;
@@ -26,6 +30,15 @@ const SubmitFoodContainer = styled(View)`
 const FoodList = () => {
   const [foodItemName, setFoodItemName] = useState<string>("");
   const [foodItemsArray, setFoodItemsArray] = useState<string[]>([]);
+  const { user } = useContext(UserStateContext);
+  const [updateGroceryList] = useMutation(UPDATE_GROCERYLIST, {
+    refetchQueries: [
+      {
+        query: USER,
+        variables: { email: user?.loginUser?.email },
+      },
+    ],
+  });
 
   const handleChange = (text: string) => {
     if (text) {

@@ -1,12 +1,13 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReminderBox } from "../components/blocks/ReminderBox";
 import { useMutation, useQuery } from "@apollo/client";
 import { UPDATE_REMINDERS } from "../mutations/loginMutation";
-import { useStore } from "../store/store";
+
 import { ReminderType } from "../types/types";
 import { USER } from "../mutations/query";
+import { UserStateContext } from "../hooks/useAuth";
 
 const RemindersContainer = styled(View)`
   height: 100%;
@@ -54,13 +55,11 @@ const SavedReminderText = styled(Text)`
 `;
 
 const Reminders = (): JSX.Element => {
-  const { user } = useStore((state) => state);
+  const { user } = useContext(UserStateContext);
   const { data } = useQuery(USER, {
     variables: { email: user?.loginUser?.email },
-    pollInterval: 20,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
-  const [reminderArray, setReminderArray] = useState();
   const [reminderMessage, setReminderMessage] = useState({
     reminderHeader: "",
     reminder: "",
@@ -73,12 +72,6 @@ const Reminders = (): JSX.Element => {
       },
     ],
   });
-
-  useEffect(() => {
-    if (data?.user) {
-      setReminderArray(data?.user.reminders);
-    }
-  }, [data?.user, reminderArray]);
 
   const handlePress = (): void => {
     setIsModalOpen(true);
@@ -104,15 +97,14 @@ const Reminders = (): JSX.Element => {
     if (user?.loginUser) {
       updateReminders({
         variables: {
-          email: data?.user.email,
-          reminders: [...reminderArray, reminderMessage],
+          email: user.loginUser.email,
+          reminders: [...data?.user?.reminders, reminderMessage],
         },
       });
       setReminderMessage({ reminder: "", reminderHeader: "" });
       setIsModalOpen(false);
     }
   };
-
   return (
     <RemindersContainer>
       <SavedReminderContainer>

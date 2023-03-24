@@ -1,8 +1,11 @@
+import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import React from "react";
+import React, { useContext } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import styled from "styled-components";
+import { UserStateContext } from "../../hooks/useAuth";
+import { USER } from "../../mutations/query";
 import { FoodItemType } from "../../types/types";
 import { AppButton } from "./AppButton";
 
@@ -33,6 +36,10 @@ const FoodItem = styled(Text)`
 `;
 
 const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
+  const { user } = useContext(UserStateContext);
+  const { data } = useQuery(USER, {
+    variables: { email: user?.loginUser?.email },
+  });
   const swipeRightAction = (item: string) => {
     return (
       <DeleteContainer>

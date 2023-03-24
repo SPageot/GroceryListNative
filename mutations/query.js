@@ -4,7 +4,7 @@ const USER = gql`
   query user($email: String!) {
     user(email: $email) {
       email
-      groceryList
+      groceryLists
       reminders {
         reminder
         reminderHeader

@@ -47,6 +47,7 @@ export interface UserType {
   loginUser?: UserInfoType;
 }
 
-export interface StoreType {
-  user: UserType;
+export interface UserContextType {
+  user?: UserType | null;
+  setUser?: React.Dispatch<React.SetStateAction<undefined>> | undefined;
 }
