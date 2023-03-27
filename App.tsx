@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { SafeAreaView } from "react-native";
 import styled from "styled-components";
 import { NavBar } from "./components/navigation/NavBar";
@@ -8,6 +9,7 @@ import UserStateProvider from "./hooks/useAuth";
 import FoodList from "./screens/FoodList";
 import Login from "./screens/Login";
 import Reminders from "./screens/Reminders";
+import { UserInfoType } from "./types/types";
 
 const AppContainer = styled(SafeAreaView)`
   height: 100%;
@@ -22,29 +24,35 @@ const client = new ApolloClient({
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [user, setUser] = useState<UserInfoType | undefined>();
   return (
-    <UserStateProvider>
+    <UserStateProvider value={{ user, setUser }}>
       <ApolloProvider client={client}>
         <NavigationContainer>
           <AppContainer>
             <Stack.Navigator>
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{ title: "Login" }}
-              />
-              <Stack.Screen
-                name="Foodlist"
-                component={FoodList}
-                options={{ title: "List Groceries" }}
-              />
-              <Stack.Screen
-                name="Reminders"
-                component={Reminders}
-                options={{ title: "Reminders" }}
-              />
+              {!user ? (
+                <Stack.Screen
+                  name="Login"
+                  component={Login}
+                  options={{ title: "Login" }}
+                />
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="Foodlist"
+                    component={FoodList}
+                    options={{ title: "List Groceries" }}
+                  />
+                  <Stack.Screen
+                    name="Reminders"
+                    component={Reminders}
+                    options={{ title: "Reminders" }}
+                  />
+                </>
+              )}
             </Stack.Navigator>
-            <NavBar />
+            {user ? <NavBar /> : null}
           </AppContainer>
         </NavigationContainer>
       </ApolloProvider>

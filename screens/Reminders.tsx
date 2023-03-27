@@ -57,7 +57,7 @@ const SavedReminderText = styled(Text)`
 const Reminders = (): JSX.Element => {
   const { user } = useContext(UserStateContext);
   const { data } = useQuery(USER, {
-    variables: { email: user?.loginUser?.email },
+    variables: { email: user?.email },
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
   const [reminderMessage, setReminderMessage] = useState({
@@ -68,7 +68,7 @@ const Reminders = (): JSX.Element => {
     refetchQueries: [
       {
         query: USER,
-        variables: { email: user?.loginUser?.email },
+        variables: { email: user?.email },
       },
     ],
   });
@@ -94,10 +94,10 @@ const Reminders = (): JSX.Element => {
   };
 
   const handleSubmitPress = async (): Promise<void> => {
-    if (user?.loginUser) {
+    if (user) {
       updateReminders({
         variables: {
-          email: user.loginUser.email,
+          email: user.email,
           reminders: [...data?.user?.reminders, reminderMessage],
         },
       });

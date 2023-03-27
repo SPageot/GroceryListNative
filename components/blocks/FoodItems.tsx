@@ -30,7 +30,6 @@ const FoodItemContainer = styled(ScrollView)`
       ? css`
           height: 80px;
           flex-direction: row;
-          justify-content: space-between;
         `
       : css`
           padding: 0px;
@@ -62,7 +61,7 @@ const LoadingContainer = styled(View)`
 const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   const { user } = useContext(UserStateContext);
   const { data, loading } = useQuery(USER, {
-    variables: { email: user?.loginUser?.email },
+    variables: { email: user?.email },
   });
 
   const swipeRightAction = (item: string) => {
@@ -108,16 +107,20 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
                 renderRightActions={() => swipeRightAction(item)}
                 key={i}
               >
-                <FoodItemContainer>
+                <FoodItemContainer
+                  contentContainerStyle={{
+                    justifyContent: "center",
+                  }}
+                >
                   <FoodItem role="contentinfo">{item}</FoodItem>
                 </FoodItemContainer>
               </Swipeable>
             );
           })
-        : data?.user?.groceryLists.map((list, i: number) => {
+        : data?.user?.groceryLists.map((list: string[], i: number) => {
             return (
               <FoodItemContainer key={i} pastGroceryList>
-                {list?.map((pastItem, i: number) => (
+                {list?.map((pastItem: string, i: number) => (
                   <FoodItem pastGroceryList key={i} role="contentinfo">
                     {pastItem}
                   </FoodItem>

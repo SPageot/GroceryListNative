@@ -61,13 +61,13 @@ const FoodList = () => {
   const [foodItemsArray, setFoodItemsArray] = useState<string[]>([]);
   const { user } = useContext(UserStateContext);
   const { data, loading } = useQuery(USER, {
-    variables: { email: user?.loginUser?.email },
+    variables: { email: user?.email },
   });
   const [updateGroceryList] = useMutation(UPDATE_GROCERYLIST, {
     refetchQueries: [
       {
         query: USER,
-        variables: { email: user?.loginUser?.email },
+        variables: { email: user?.email },
       },
     ],
   });
@@ -88,7 +88,7 @@ const FoodList = () => {
   const handleSaveListPress = () => {
     updateGroceryList({
       variables: {
-        email: user?.loginUser.email,
+        email: user?.email,
         groceryLists: [...data.user.groceryLists, foodItemsArray],
       },
     });

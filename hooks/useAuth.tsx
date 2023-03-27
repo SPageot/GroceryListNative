@@ -1,14 +1,15 @@
 //TODO: AUTHENTICATION
-import { useState, createContext, PropsWithChildren } from "react";
+import { createContext, PropsWithChildren } from "react";
 import { UserContextType } from "../types/types";
 
 export const UserStateContext = createContext<UserContextType>({});
 
-const UserStateProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState();
-
+const UserStateProvider: React.FC<PropsWithChildren> = ({
+  children,
+  value,
+}) => {
   return (
-    <UserStateContext.Provider value={{ setUser, user }}>
+    <UserStateContext.Provider value={value}>
       {children}
     </UserStateContext.Provider>
   );

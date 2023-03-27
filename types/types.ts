@@ -37,16 +37,11 @@ export interface ReminderType {
   reminderHeader: string;
 }
 
-export interface UserInfoType {
-  __typename: string;
+export interface UserType {
   email: string;
   groceryList: string[] | null;
   name: string;
   reminders: ReminderType;
-}
-
-export interface UserType {
-  loginUser?: UserInfoType;
 }
 
 export interface UserContextType {

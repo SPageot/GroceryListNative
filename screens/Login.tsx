@@ -1,4 +1,5 @@
 import { View, Text, KeyboardAvoidingView } from "react-native";
+import _ from "lodash";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
@@ -6,8 +7,6 @@ import { AppButton } from "../components/blocks/AppButton";
 import { PropType } from "../types/types";
 import { useMutation } from "@apollo/client";
 import { ADD_USER, LOGIN_USER } from "../mutations/loginMutation";
-import { NavigationStackProp } from "react-navigation-stack";
-import { useNavigation } from "@react-navigation/core";
 import { UserStateContext } from "../hooks/useAuth";
 
 const LoginContainer = styled(View)`
@@ -16,6 +15,7 @@ const LoginContainer = styled(View)`
   background-color: #0f4d92;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const LoginBox = styled(View)`
@@ -40,6 +40,21 @@ const LoginInputLabel = styled(Text)`
   font-size: 20px;
 `;
 
+const ErrorContainer = styled(View)`
+  width: 100%;
+  height: 5%;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  background-color: red;
+  top: 150px;
+`;
+
+const ErrorMessage = styled(Text)`
+  color: #fff;
+  font-size: 20px;
+`;
+
 const ButtonContainer = styled(View)`
   width: 100%;
   flex-direction: row;
@@ -48,7 +63,6 @@ const ButtonContainer = styled(View)`
 
 const Login = () => {
   const [willRegister, setWillRegister] = useState<boolean>();
-  const navigation: NavigationStackProp = useNavigation();
   const { setUser } = useContext(UserStateContext);
   const [login, setLogin] = useState({
     name: "",
@@ -58,14 +72,13 @@ const Login = () => {
   const [addUser] = useMutation(ADD_USER, {
     variables: login,
   });
-  const [userLogin, { data }] = useMutation(LOGIN_USER, {
+  const [userLogin, { data, error }] = useMutation(LOGIN_USER, {
     variables: { email: login.email, password: login.password },
   });
 
   useEffect(() => {
-    if (data) {
-      setUser(data);
-      navigation.navigate("Foodlist");
+    if (data && !_.isNull(data?.loginUser)) {
+      setUser(data.loginUser);
     }
   }, [data]);
 
@@ -109,13 +122,20 @@ const Login = () => {
 
   const handleLogInPress = () => {
     if (login.email && login.password) {
-      userLogin(login.email, login.password).catch((err) => console.log(err));
+      userLogin(login.email, login.password);
     }
   };
 
   return (
     <KeyboardAvoidingView behavior="height">
       <LoginContainer>
+        {error || _.isNull(data?.loginUser) ? (
+          <ErrorContainer>
+            <ErrorMessage>
+              {error?.message || "Wrong Password/Email"}
+            </ErrorMessage>
+          </ErrorContainer>
+        ) : null}
         <LoginBox shouldExpand={willRegister}>
           {willRegister ? (
             <LoginInputContainer>
