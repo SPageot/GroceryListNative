@@ -9,7 +9,7 @@ import UserStateProvider from "./hooks/useAuth";
 import FoodList from "./screens/FoodList";
 import Login from "./screens/Login";
 import Reminders from "./screens/Reminders";
-import { UserInfoType } from "./types/types";
+import { UserType } from "./types/types";
 
 const AppContainer = styled(SafeAreaView)`
   height: 100%;
@@ -24,7 +24,8 @@ const client = new ApolloClient({
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [user, setUser] = useState<UserInfoType | undefined>();
+  const [user, setUser] = useState<UserType | undefined>();
+
   return (
     <UserStateProvider value={{ user, setUser }}>
       <ApolloProvider client={client}>

@@ -49,10 +49,10 @@ const FoodListOption = styled(Pressable)`
   ${(props: PropType) =>
     props.isSavedButton
       ? css`
-          background-color: blue;
+          background-color: #00688b;
         `
       : css`
-          background-color: red;
+          background-color: #c83200;
         `}
 `;
 
@@ -116,7 +116,7 @@ const FoodList = () => {
       <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />
       <SubmitFoodContainer>
         <Input
-          type="default"
+          inputType="default"
           placeholder="Enter Food Name"
           onChangeText={handleChange}
           defaultValue={foodItemName}

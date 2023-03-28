@@ -9,33 +9,46 @@ const FoodInputName = styled(TextInput)`
   overflow: hidden;
 
   ${(props: PropType) =>
-    props.type === "reminders"
+    props.inputType === "reminders"
       ? css`
           height: 200px;
           width: 350px;
         `
-      : props.type === "default"
+      : props.inputType === "default"
       ? css`
           height: 40px;
           width: 75%;
         `
       : null}
+
+  ${(props: PropType) =>
+    props.inputError
+      ? css`
+          border: 1px solid #c83200;
+        `
+      : null}
 `;
 
 const Input = ({
-  type,
+  inputType,
   placeholder,
   onChangeText,
   defaultValue,
+  required,
+  secureTextEntry,
+  inputError,
 }: InputType) => {
   return (
     <FoodInputName
-      multiline={type === "reminders"}
+      required={required}
+      multiline={inputType === "reminders"}
       placeholderTextColor="#fff"
-      type={type}
+      inputType={inputType}
       placeholder={placeholder}
       onChangeText={onChangeText}
       defaultValue={defaultValue}
+      secureTextEntry={secureTextEntry}
+      inputError={inputError}
     />
   );
 };

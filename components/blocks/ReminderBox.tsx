@@ -66,15 +66,15 @@ const ReminderBox = ({
         </ReminderBoxHeaderContainer>
         <ReminderHeaderContainer>
           <Input
-            type="default"
             onChangeText={handleHeaderChangeText}
             defaultValue={headerValue}
             placeholder="Enter header text..."
+            inputType="default"
           />
         </ReminderHeaderContainer>
         <ReminderMessageContainer>
           <Input
-            type="reminders"
+            inputType="reminders"
             onChangeText={handleChangeText}
             defaultValue={messageValue}
             placeholder="Enter reminder message..."

@@ -18,7 +18,7 @@ const FoodsContainer = styled(ScrollView)`
 `;
 const DeleteContainer = styled(View)`
   justify-content: center;
-  background-color: red;
+  background-color: #c83200;
 `;
 
 const FoodItemContainer = styled(ScrollView)`

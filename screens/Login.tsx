@@ -1,6 +1,6 @@
 import { View, Text, KeyboardAvoidingView } from "react-native";
 import _ from "lodash";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
@@ -46,7 +46,7 @@ const ErrorContainer = styled(View)`
   position: absolute;
   align-items: center;
   justify-content: center;
-  background-color: red;
+  background-color: #c83200;
   top: 150px;
 `;
 
@@ -69,7 +69,10 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [addUser] = useMutation(ADD_USER, {
+  const [
+    addUser,
+    { data: registerData, loading: registerLoading, error: registerError },
+  ] = useMutation(ADD_USER, {
     variables: login,
   });
   const [userLogin, { data, error }] = useMutation(LOGIN_USER, {
@@ -81,6 +84,14 @@ const Login = () => {
       setUser(data.loginUser);
     }
   }, [data]);
+
+  const handleError = useCallback(() => {
+    if (!_.isUndefined(error?.message)) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [error]);
 
   const handleNameChange = (text: string): void => {
     if (text) {
@@ -120,19 +131,25 @@ const Login = () => {
     }
   };
 
-  const handleLogInPress = () => {
+  const handleLogInPress = async () => {
     if (login.email && login.password) {
-      userLogin(login.email, login.password);
+      try {
+        await userLogin(login.email, login.password);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
   return (
     <KeyboardAvoidingView behavior="height">
       <LoginContainer>
-        {error || _.isNull(data?.loginUser) ? (
+        {error || _.isNull(data?.loginUser) || registerError ? (
           <ErrorContainer>
             <ErrorMessage>
-              {error?.message || "Wrong Password/Email"}
+              {registerError?.message ||
+                error?.message ||
+                "Wrong Password/Email"}
             </ErrorMessage>
           </ErrorContainer>
         ) : null}
@@ -141,29 +158,35 @@ const Login = () => {
             <LoginInputContainer>
               <LoginInputLabel>Name</LoginInputLabel>
               <Input
+                inputError={handleError()}
                 placeholder="Enter First Name/Nickname/etc..."
                 onChangeText={handleNameChange}
                 defaultValue={login.name}
-                type="default"
+                inputType="default"
               />
             </LoginInputContainer>
           ) : null}
           <LoginInputContainer>
             <LoginInputLabel>Email</LoginInputLabel>
             <Input
+              inputError={handleError()}
+              required
               placeholder="Enter Email..."
               onChangeText={handleEmailChange}
               defaultValue={login.email}
-              type="default"
+              inputType="default"
             />
           </LoginInputContainer>
           <LoginInputContainer>
             <LoginInputLabel>Password</LoginInputLabel>
             <Input
+              secureTextEntry
+              inputError={handleError()}
+              required
               placeholder="Enter Password..."
               onChangeText={handlePasswordChange}
               defaultValue={login.password}
-              type="default"
+              inputType="default"
             />
           </LoginInputContainer>
           <ButtonContainer>

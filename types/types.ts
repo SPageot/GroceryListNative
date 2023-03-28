@@ -1,8 +1,9 @@
 export interface PropType {
-  type?: "reminders" | "default";
+  inputType?: "reminders" | "default";
   shouldExpand?: boolean;
   pastGroceryList?: boolean;
   isSavedButton?: boolean;
+  inputError?: boolean;
 }
 
 export interface ReminderProps {
@@ -20,10 +21,13 @@ export interface FoodItemType {
 }
 
 export interface InputType {
-  type: "reminders" | "default";
+  inputType: "reminders" | "default";
   onChangeText: (text: string) => void;
   defaultValue: string;
-  placeholder: string;
+  placeholder?: string;
+  required?: boolean;
+  secureTextEntry?: boolean;
+  inputError: boolean;
 }
 
 export interface SubmitType {
@@ -46,5 +50,5 @@ export interface UserType {
 
 export interface UserContextType {
   user?: UserType | null;
-  setUser?: React.Dispatch<React.SetStateAction<undefined>> | undefined;
+  setToken?: React.Dispatch<React.SetStateAction<string>> | undefined;
 }
