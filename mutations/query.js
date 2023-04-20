@@ -10,6 +10,7 @@ const USER = gql`
         groceryList
       }
       reminders {
+        id
         reminder
         reminderHeader
       }

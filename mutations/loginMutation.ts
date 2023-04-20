@@ -18,8 +18,20 @@ const ADD_USER = gql`
 `;
 
 const ADD_REMINDERS = gql`
-  mutation addReminders($email: String!, $reminders: Object!) {
+  mutation addReminders($email: String!, $reminders: reminderInput) {
     addReminders(email: $email, reminders: $reminders) {
+      reminders {
+        id
+        reminderHeader
+        reminder
+      }
+    }
+  }
+`;
+
+const DELETE_REMINDERS = gql`
+  mutation deleteReminders($email: String!, $reminders: reminderInput) {
+    deleteReminders(email: $email, reminders: $reminders) {
       reminders {
         id
         reminderHeader
@@ -35,6 +47,17 @@ const ADD_GROCERYLIST = gql`
       groceryLists {
         id
         groceryList
+      }
+    }
+  }
+`;
+
+const DELETE_GROCERYLIST = gql`
+  mutation deleteGroceryList($email: String!, $groceryLists: groceryListInput) {
+    deleteGroceryList(email: $email, groceryLists: $groceryLists) {
+      groceryLists {
+        groceryList
+        id
       }
     }
   }
@@ -58,4 +81,11 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { ADD_USER, LOGIN_USER, ADD_REMINDERS, ADD_GROCERYLIST };
+export {
+  ADD_USER,
+  LOGIN_USER,
+  ADD_REMINDERS,
+  ADD_GROCERYLIST,
+  DELETE_GROCERYLIST,
+  DELETE_REMINDERS,
+};

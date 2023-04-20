@@ -1,16 +1,23 @@
-import { View, Text, Pressable } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, Pressable, ScrollView } from "react-native";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { ReminderBox } from "../components/blocks/ReminderBox";
 import { useMutation, useQuery } from "@apollo/client";
-import { ADD_REMINDERS } from "../mutations/loginMutation";
+import { ADD_REMINDERS, DELETE_REMINDERS } from "../mutations/loginMutation";
+import { Swipeable } from "react-native-gesture-handler";
 
 import { ReminderType } from "../types/types";
 import { USER } from "../mutations/query";
 import { UserStateContext } from "../hooks/useAuth";
+import { AppButton } from "../components/blocks/AppButton";
+
+const DeleteContainer = styled(View)`
+  justify-content: center;
+  background-color: #c83200;
+`;
 
 const RemindersContainer = styled(View)`
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
   background-color: #0f4d92;
   position: relative;
@@ -33,15 +40,12 @@ const AddIcon = styled(Text)`
   font-size: 30px;
 `;
 
-const SavedReminderContainer = styled(View)`
-  height: 90%;
+const SavedReminderContainer = styled(ScrollView)`
   width: 100%;
-  justify-content: flex-start;
-  align-items: center;
 `;
 
 const SavedReminders = styled(View)`
-  height: 10%;
+  height: 100%;
   width: 100%;
   flex-direction: row;
   justify-content: center;
@@ -65,6 +69,14 @@ const Reminders = (): JSX.Element => {
     reminder: "",
   });
   const [addReminders] = useMutation(ADD_REMINDERS, {
+    refetchQueries: [
+      {
+        query: USER,
+        variables: { email: user?.email },
+      },
+    ],
+  });
+  const [deleteReminders] = useMutation(DELETE_REMINDERS, {
     refetchQueries: [
       {
         query: USER,
@@ -105,17 +117,50 @@ const Reminders = (): JSX.Element => {
       setIsModalOpen(false);
     }
   };
+
+  const handleDeleteReminderPress = (deletedItem: string) => {
+    deleteReminders({
+      variables: {
+        email: user?.email,
+        reminders: { id: deletedItem },
+      },
+    });
+  };
+
+  const swipeReminderRightAction = (item: string) => {
+    return (
+      <DeleteContainer>
+        <AppButton
+          color="#fff"
+          title="Delete"
+          onPress={() => handleDeleteReminderPress(item)}
+        />
+      </DeleteContainer>
+    );
+  };
   return (
     <RemindersContainer>
       <SavedReminderContainer>
         {data && data.user
-          ? data.user.reminders.map((reminder: ReminderType, i: number) => {
+          ? data.user.reminders.map((reminder: ReminderType) => {
               return (
-                <SavedReminders key={i}>
-                  <SavedReminderText>
-                    {reminder.reminderHeader}
-                  </SavedReminderText>
-                </SavedReminders>
+                <Swipeable
+                  containerStyle={{
+                    height: 100,
+                    width: "100%",
+                    marginBottom: 20,
+                  }}
+                  renderRightActions={() =>
+                    swipeReminderRightAction(reminder.id)
+                  }
+                  key={reminder.id}
+                >
+                  <SavedReminders key={reminder.id}>
+                    <SavedReminderText>
+                      {reminder.reminderHeader}
+                    </SavedReminderText>
+                  </SavedReminders>
+                </Swipeable>
               );
             })
           : null}

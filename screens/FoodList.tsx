@@ -4,16 +4,18 @@ import { FoodItems } from "../components/blocks/FoodItems";
 import styled, { css } from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
-import { useMutation, useQuery } from "@apollo/client";
-import { ADD_GROCERYLIST } from "../mutations/loginMutation";
+import { useMutation } from "@apollo/client";
+import {
+  ADD_GROCERYLIST,
+  DELETE_GROCERYLIST,
+} from "../mutations/loginMutation";
 import { USER } from "../mutations/query";
 import { UserStateContext } from "../hooks/useAuth";
 import _ from "lodash";
 import { PropType } from "../types/types";
-import { Guid } from "guid-typescript";
 
 const FoodListContainer = styled(View)`
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
   flex-direction: column-reverse;
   align-items: center;
@@ -44,7 +46,7 @@ const SaveFoodListText = styled(Text)`
 `;
 
 const FoodListOption = styled(Pressable)`
-  height: 100%;
+  flex-grow: 1;
   width: 50%;
   justify-content: center;
   ${(props: PropType) =>
@@ -61,7 +63,15 @@ const FoodList = () => {
   const [foodItemName, setFoodItemName] = useState<string>("");
   const [foodItemsArray, setFoodItemsArray] = useState<string[]>([]);
   const { user } = useContext(UserStateContext);
-  const [AddGroceryList] = useMutation(ADD_GROCERYLIST, {
+  const [addGroceryList] = useMutation(ADD_GROCERYLIST, {
+    refetchQueries: [
+      {
+        query: USER,
+        variables: { email: user?.email },
+      },
+    ],
+  });
+  const [deleteGroceryList] = useMutation(DELETE_GROCERYLIST, {
     refetchQueries: [
       {
         query: USER,
@@ -84,10 +94,10 @@ const FoodList = () => {
   };
 
   const handleSaveListPress = () => {
-    AddGroceryList({
+    addGroceryList({
       variables: {
         email: user?.email,
-        groceryLists: { id: Guid.create(), groceryList: foodItemsArray },
+        groceryLists: { groceryList: foodItemsArray },
       },
     });
     setFoodItemsArray([]);
@@ -96,10 +106,17 @@ const FoodList = () => {
   const handleResetListPress = () => {
     setFoodItemsArray([]);
   };
-  const handleDeletePress = (deletedItem: string | string[]) => {
-    if (_.isString(deletedItem)) {
-      setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
-    }
+  const handleDeletePress = (deletedItem: string) => {
+    setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
+  };
+
+  const handleDeleteListPress = (deletedItem: string) => {
+    deleteGroceryList({
+      variables: {
+        email: user?.email,
+        groceryLists: { id: deletedItem },
+      },
+    });
   };
   return (
     <FoodListContainer>
@@ -113,7 +130,11 @@ const FoodList = () => {
           </FoodListOption>
         </SaveFoodListContainer>
       ) : null}
-      <FoodItems foodItemsArray={foodItemsArray} onPress={handleDeletePress} />
+      <FoodItems
+        foodItemsArray={foodItemsArray}
+        onPress={handleDeletePress}
+        onListPress={handleDeleteListPress}
+      />
       <SubmitFoodContainer>
         <Input
           inputType="default"

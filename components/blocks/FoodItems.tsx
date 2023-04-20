@@ -53,12 +53,12 @@ const FoodItem = styled(Text)`
 `;
 
 const LoadingContainer = styled(View)`
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
   padding: 20px;
 `;
 
-const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
+const FoodItems = ({ foodItemsArray, onPress, onListPress }: FoodItemType) => {
   const { user } = useContext(UserStateContext);
   const { data, loading } = useQuery(USER, {
     variables: { email: user?.email },
@@ -74,7 +74,11 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   const swipeListRightAction = (item: string) => {
     return (
       <DeleteContainer>
-        <AppButton color="#fff" title="Delete" onPress={() => onPress(item)} />
+        <AppButton
+          color="#fff"
+          title="Delete"
+          onPress={() => onListPress(item)}
+        />
       </DeleteContainer>
     );
   };
@@ -127,7 +131,7 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
         : data?.user?.groceryLists.map((list: string[]) => {
             return (
               <Swipeable
-                renderRightActions={() => swipeRightAction(list.id)}
+                renderRightActions={() => swipeListRightAction(list.id)}
                 key={list.id}
               >
                 <FoodItemContainer pastGroceryList>

@@ -12,7 +12,7 @@ import Reminders from "./screens/Reminders";
 import { UserType } from "./types/types";
 
 const AppContainer = styled(SafeAreaView)`
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
 `;
 
