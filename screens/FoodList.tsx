@@ -5,11 +5,12 @@ import styled, { css } from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
 import { useMutation, useQuery } from "@apollo/client";
-import { UPDATE_GROCERYLIST } from "../mutations/loginMutation";
+import { ADD_GROCERYLIST } from "../mutations/loginMutation";
 import { USER } from "../mutations/query";
 import { UserStateContext } from "../hooks/useAuth";
 import _ from "lodash";
 import { PropType } from "../types/types";
+import { Guid } from "guid-typescript";
 
 const FoodListContainer = styled(View)`
   height: 100%;
@@ -60,10 +61,7 @@ const FoodList = () => {
   const [foodItemName, setFoodItemName] = useState<string>("");
   const [foodItemsArray, setFoodItemsArray] = useState<string[]>([]);
   const { user } = useContext(UserStateContext);
-  const { data, loading } = useQuery(USER, {
-    variables: { email: user?.email },
-  });
-  const [updateGroceryList] = useMutation(UPDATE_GROCERYLIST, {
+  const [AddGroceryList] = useMutation(ADD_GROCERYLIST, {
     refetchQueries: [
       {
         query: USER,
@@ -86,10 +84,10 @@ const FoodList = () => {
   };
 
   const handleSaveListPress = () => {
-    updateGroceryList({
+    AddGroceryList({
       variables: {
         email: user?.email,
-        groceryLists: [...data.user.groceryLists, foodItemsArray],
+        groceryLists: { id: Guid.create(), groceryList: foodItemsArray },
       },
     });
     setFoodItemsArray([]);
@@ -98,8 +96,10 @@ const FoodList = () => {
   const handleResetListPress = () => {
     setFoodItemsArray([]);
   };
-  const handleDeletePress = (deletedItem: string) => {
-    setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
+  const handleDeletePress = (deletedItem: string | string[]) => {
+    if (_.isString(deletedItem)) {
+      setFoodItemsArray(foodItemsArray.filter((item) => item !== deletedItem));
+    }
   };
   return (
     <FoodListContainer>

@@ -42,6 +42,7 @@ export interface ReminderType {
 }
 
 export interface UserType {
+  id: number;
   email: string;
   groceryList: string[] | null;
   name: string;
@@ -52,3 +53,8 @@ export interface UserContextType {
   user?: UserType | null;
   setToken?: React.Dispatch<React.SetStateAction<string>> | undefined;
 }
+
+export type GroceryListType = {
+  id: number;
+  groceryList: string[];
+};

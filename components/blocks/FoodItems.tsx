@@ -63,8 +63,15 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
   const { data, loading } = useQuery(USER, {
     variables: { email: user?.email },
   });
-
   const swipeRightAction = (item: string) => {
+    return (
+      <DeleteContainer>
+        <AppButton color="#fff" title="Delete" onPress={() => onPress(item)} />
+      </DeleteContainer>
+    );
+  };
+
+  const swipeListRightAction = (item: string) => {
     return (
       <DeleteContainer>
         <AppButton color="#fff" title="Delete" onPress={() => onPress(item)} />
@@ -117,15 +124,20 @@ const FoodItems = ({ foodItemsArray, onPress }: FoodItemType) => {
               </Swipeable>
             );
           })
-        : data?.user?.groceryLists.map((list: string[], i: number) => {
+        : data?.user?.groceryLists.map((list: string[]) => {
             return (
-              <FoodItemContainer key={i} pastGroceryList>
-                {list?.map((pastItem: string, i: number) => (
-                  <FoodItem pastGroceryList key={i} role="contentinfo">
-                    {pastItem}
-                  </FoodItem>
-                ))}
-              </FoodItemContainer>
+              <Swipeable
+                renderRightActions={() => swipeRightAction(list.id)}
+                key={list.id}
+              >
+                <FoodItemContainer pastGroceryList>
+                  {list.groceryList?.map((pastItem: string, i: number) => (
+                    <FoodItem pastGroceryList key={i} role="contentinfo">
+                      {pastItem}
+                    </FoodItem>
+                  ))}
+                </FoodItemContainer>
+              </Swipeable>
             );
           })}
     </FoodsContainer>

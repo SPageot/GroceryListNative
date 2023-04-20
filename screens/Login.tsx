@@ -1,7 +1,7 @@
 import { View, Text, KeyboardAvoidingView } from "react-native";
 import _ from "lodash";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Input } from "../components/form/Input";
 import { AppButton } from "../components/blocks/AppButton";
 import { PropType } from "../types/types";
@@ -19,13 +19,22 @@ const LoginContainer = styled(View)`
 `;
 
 const LoginBox = styled(View)`
-  height: ${(props: PropType) => (props.shouldExpand ? "500px" : "400px")};
   width: 400px;
   background-color: #191970;
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-  gap: 30px;
+
+  ${(props: PropType) =>
+    props.shouldExpand
+      ? css`
+          gap: 50px;
+          height: 700px;
+        `
+      : css`
+          gap: 30px;
+          height: 400px;
+        `};
 `;
 
 const LoginInputContainer = styled(View)`
@@ -61,6 +70,17 @@ const ButtonContainer = styled(View)`
   justify-content: space-evenly;
 `;
 
+const PasswordRulesContainer = styled(View)`
+  width: 90%;
+`;
+
+const PasswordRules = styled(Text)`
+  color: #fff;
+  font-size: 15px;
+  text-align: center;
+  line-height: 20px;
+`;
+
 const Login = () => {
   const [willRegister, setWillRegister] = useState<boolean>();
   const { setUser } = useContext(UserStateContext);
@@ -69,15 +89,8 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [
-    addUser,
-    { data: registerData, loading: registerLoading, error: registerError },
-  ] = useMutation(ADD_USER, {
-    variables: login,
-  });
-  const [userLogin, { data, error }] = useMutation(LOGIN_USER, {
-    variables: { email: login.email, password: login.password },
-  });
+  const [addUser, { error: registerError, reset }] = useMutation(ADD_USER);
+  const [userLogin, { data, error }] = useMutation(LOGIN_USER);
 
   useEffect(() => {
     if (data && !_.isNull(data?.loginUser)) {
@@ -93,11 +106,12 @@ const Login = () => {
     }
   }, [error]);
 
-  const handleNameChange = (text: string): void => {
+  const handleNameChange = useCallback((text: string): void => {
     if (text) {
       setLogin({ ...login, name: text });
+      reset()
     }
-  };
+  },[login.name]);
 
   const handleEmailChange = (text: string): void => {
     if (text) {
@@ -117,11 +131,24 @@ const Login = () => {
 
   const handleWillSignUpPress = () => {
     setWillRegister(true);
+    setLogin({
+      name: "",
+      email: "",
+      password: "",
+    });
   };
 
   const handleSignUpPress = () => {
-    if (login.name && login.email && login.password) {
-      addUser(login.name, login.email, login.password);
+    if (
+      login.name &&
+      login.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) &&
+      login.password.match(
+        /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/
+      )
+    ) {
+      addUser({
+        variables: login,
+      });
       setLogin({
         name: "",
         email: "",
@@ -134,7 +161,9 @@ const Login = () => {
   const handleLogInPress = async () => {
     if (login.email && login.password) {
       try {
-        await userLogin(login.email, login.password);
+        await userLogin({
+          variables: { email: login.email, password: login.password },
+        });
       } catch (err) {
         console.log(err);
       }
@@ -189,6 +218,16 @@ const Login = () => {
               inputType="default"
             />
           </LoginInputContainer>
+          {willRegister ? (
+            <PasswordRulesContainer>
+              <PasswordRules>
+                password must contain a single digit from 1 to 9.{"\n"} password
+                must contain one lowercase letter. {"\n"}password must contain
+                one uppercase letter.{"\n"} password must contain one special
+                character. {"\n"}password must be 8-16 characters long
+              </PasswordRules>
+            </PasswordRulesContainer>
+          ) : null}
           <ButtonContainer>
             <AppButton
               color="#fff"

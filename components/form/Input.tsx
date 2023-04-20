@@ -37,9 +37,11 @@ const Input = ({
   required,
   secureTextEntry,
   inputError,
+  inputRef,
 }: InputType) => {
   return (
     <FoodInputName
+      ref={inputRef}
       required={required}
       multiline={inputType === "reminders"}
       placeholderTextColor="#fff"

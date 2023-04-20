@@ -5,7 +5,10 @@ const ADD_USER = gql`
     addUser(name: $name, email: $email, password: $password) {
       name
       email
-      groceryLists
+      groceryLists {
+        id
+        groceryList
+      }
       reminders {
         reminderHeader
         reminder
@@ -14,10 +17,11 @@ const ADD_USER = gql`
   }
 `;
 
-const UPDATE_REMINDERS = gql`
-  mutation UpdateReminders($email: String!, $reminders: [ReminderInput]) {
-    updateReminders(email: $email, reminders: $reminders) {
+const ADD_REMINDERS = gql`
+  mutation addReminders($email: String!, $reminders: Object!) {
+    addReminders(email: $email, reminders: $reminders) {
       reminders {
+        id
         reminderHeader
         reminder
       }
@@ -25,10 +29,13 @@ const UPDATE_REMINDERS = gql`
   }
 `;
 
-const UPDATE_GROCERYLIST = gql`
-  mutation updateGroceryList($email: String!, $groceryLists: [[String]]) {
-    updateGroceryList(email: $email, groceryLists: $groceryLists) {
-      groceryLists
+const ADD_GROCERYLIST = gql`
+  mutation addGroceryList($email: String!, $groceryLists: groceryListInput) {
+    addGroceryList(email: $email, groceryLists: $groceryLists) {
+      groceryLists {
+        id
+        groceryList
+      }
     }
   }
 `;
@@ -36,9 +43,13 @@ const UPDATE_GROCERYLIST = gql`
 const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $password: String!) {
     loginUser(email: $email, password: $password) {
+      id
       name
       email
-      groceryLists
+      groceryLists {
+        id
+        groceryList
+      }
       reminders {
         reminderHeader
         reminder
@@ -47,4 +58,4 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { ADD_USER, LOGIN_USER, UPDATE_REMINDERS, UPDATE_GROCERYLIST };
+export { ADD_USER, LOGIN_USER, ADD_REMINDERS, ADD_GROCERYLIST };

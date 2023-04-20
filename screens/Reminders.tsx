@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReminderBox } from "../components/blocks/ReminderBox";
 import { useMutation, useQuery } from "@apollo/client";
-import { UPDATE_REMINDERS } from "../mutations/loginMutation";
+import { ADD_REMINDERS } from "../mutations/loginMutation";
 
 import { ReminderType } from "../types/types";
 import { USER } from "../mutations/query";
@@ -64,7 +64,7 @@ const Reminders = (): JSX.Element => {
     reminderHeader: "",
     reminder: "",
   });
-  const [updateReminders] = useMutation(UPDATE_REMINDERS, {
+  const [addReminders] = useMutation(ADD_REMINDERS, {
     refetchQueries: [
       {
         query: USER,
@@ -95,10 +95,10 @@ const Reminders = (): JSX.Element => {
 
   const handleSubmitPress = async (): Promise<void> => {
     if (user) {
-      updateReminders({
+      addReminders({
         variables: {
           email: user.email,
-          reminders: [...data?.user?.reminders, reminderMessage],
+          reminders: reminderMessage,
         },
       });
       setReminderMessage({ reminder: "", reminderHeader: "" });
