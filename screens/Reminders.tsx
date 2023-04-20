@@ -3,7 +3,11 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { ReminderBox } from "../components/blocks/ReminderBox";
 import { useMutation, useQuery } from "@apollo/client";
-import { ADD_REMINDERS, DELETE_REMINDERS } from "../mutations/loginMutation";
+import {
+  ADD_REMINDERS,
+  DELETE_REMINDERS,
+  UPDATE_REMINDERS,
+} from "../mutations/loginMutation";
 import { Swipeable } from "react-native-gesture-handler";
 
 import { ReminderType } from "../types/types";
@@ -44,7 +48,7 @@ const SavedReminderContainer = styled(ScrollView)`
   width: 100%;
 `;
 
-const SavedReminders = styled(View)`
+const SavedReminders = styled(Pressable)`
   height: 100%;
   width: 100%;
   flex-direction: row;
@@ -64,6 +68,7 @@ const Reminders = (): JSX.Element => {
     variables: { email: user?.email },
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>();
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>();
   const [reminderMessage, setReminderMessage] = useState({
     reminderHeader: "",
     reminder: "",
@@ -77,6 +82,14 @@ const Reminders = (): JSX.Element => {
     ],
   });
   const [deleteReminders] = useMutation(DELETE_REMINDERS, {
+    refetchQueries: [
+      {
+        query: USER,
+        variables: { email: user?.email },
+      },
+    ],
+  });
+  const [updateReminders] = useMutation(UPDATE_REMINDERS, {
     refetchQueries: [
       {
         query: USER,
@@ -101,7 +114,17 @@ const Reminders = (): JSX.Element => {
     }
   };
 
+  const handleReminderPress = (reminder: object): void => {
+    setReminderMessage(reminder);
+    setIsEditModalOpen(true);
+  };
+
   const handleCancelPress = (): void => {
+    setReminderMessage({
+      reminder: "",
+      reminderHeader: "",
+    });
+    setIsEditModalOpen(false);
     setIsModalOpen(false);
   };
 
@@ -125,6 +148,16 @@ const Reminders = (): JSX.Element => {
         reminders: { id: deletedItem },
       },
     });
+  };
+
+  const handleUpdatePress = () => {
+    updateReminders({
+      variables: {
+        email: user?.email,
+        reminders: reminderMessage,
+      },
+    });
+    setIsEditModalOpen(false);
   };
 
   const swipeReminderRightAction = (item: string) => {
@@ -155,7 +188,10 @@ const Reminders = (): JSX.Element => {
                   }
                   key={reminder.id}
                 >
-                  <SavedReminders key={reminder.id}>
+                  <SavedReminders
+                    onLongPress={() => handleReminderPress(reminder)}
+                    key={reminder.id}
+                  >
                     <SavedReminderText>
                       {reminder.reminderHeader}
                     </SavedReminderText>
@@ -168,8 +204,10 @@ const Reminders = (): JSX.Element => {
       <AddReminder onPress={handlePress}>
         <AddIcon>+</AddIcon>
       </AddReminder>
-      {isModalOpen ? (
+      {isModalOpen || isEditModalOpen ? (
         <ReminderBox
+          isUpdating={isEditModalOpen}
+          handleUpdatePress={handleUpdatePress}
           handleChangeText={handleChangeText}
           handleHeaderChangeText={handleHeaderChangeText}
           handleCancelPress={handleCancelPress}

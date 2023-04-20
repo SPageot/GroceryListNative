@@ -55,8 +55,10 @@ const ReminderBox = ({
   handleChangeText,
   handleCancelPress,
   handleSubmitPress,
+  handleUpdatePress,
   headerValue,
   messageValue,
+  isUpdating,
 }: ReminderProps) => {
   return (
     <ReminderBoxContainer>
@@ -82,7 +84,11 @@ const ReminderBox = ({
         </ReminderMessageContainer>
         <ReminderOptionsContainer>
           <AppButton title="Cancel" onPress={handleCancelPress} color="#fff" />
-          <AppButton title="Submit" onPress={handleSubmitPress} color="#fff" />
+          <AppButton
+            title={!isUpdating ? "Submit" : "Update"}
+            onPress={!isUpdating ? handleSubmitPress : handleUpdatePress}
+            color="#fff"
+          />
         </ReminderOptionsContainer>
       </ReminderInfoBox>
     </ReminderBoxContainer>
