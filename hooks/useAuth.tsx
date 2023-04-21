@@ -11,17 +11,21 @@ const UserStateProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState();
 
   const loginUser = (login) => {
-    setIsLoading(true);
-    setUserToken(login.token);
-    AsyncStorage.setItem("userToken", login.token);
-    setUser(login.user);
-    setIsLoading(false);
+    if (login.user && login.token) {
+      setIsLoading(true);
+      setUserToken(login.token);
+      AsyncStorage.setItem("userToken", login.token);
+      AsyncStorage.setItem("user", JSON.stringify(login.user));
+      setUser(login.user);
+      setIsLoading(false);
+    }
   };
 
   const logoutUser = () => {
     setIsLoading(true);
     setUserToken(null);
     AsyncStorage.removeItem("userToken");
+    AsyncStorage.removeItem("user");
     setIsLoading(false);
   };
 
@@ -29,8 +33,9 @@ const UserStateProvider: React.FC<PropsWithChildren> = ({ children }) => {
     try {
       setIsLoading(true);
       const getUserToken = await AsyncStorage.getItem("userToken");
-  
+      const getUser = await AsyncStorage.getItem("user");
       setUserToken(getUserToken);
+      setUser(JSON.parse(getUser));
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -40,7 +45,6 @@ const UserStateProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     isLoggedIn();
   }, []);
-  
 
   return (
     <UserStateContext.Provider

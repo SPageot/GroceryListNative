@@ -1,10 +1,15 @@
 import { View, Text, Pressable } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faBook, faList } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBook,
+  faCircleArrowUp,
+  faList,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/core";
 import { NavigationStackProp } from "react-navigation-stack";
+import { UserStateContext } from "../../hooks/useAuth";
 
 const NavBarContainer = styled(View)`
   height: 10%;
@@ -26,6 +31,7 @@ const IconName = styled(Text)`
 
 const NavBar = () => {
   const navigation: NavigationStackProp = useNavigation();
+  const { logoutUser } = useContext(UserStateContext);
   return (
     <NavBarContainer>
       <IconContainer onPress={() => navigation.navigate("Foodlist")}>
@@ -35,6 +41,10 @@ const NavBar = () => {
       <IconContainer onPress={() => navigation.navigate("Reminders")}>
         <FontAwesomeIcon size={30} color="#fff" icon={faBook} />
         <IconName>Reminder</IconName>
+      </IconContainer>
+      <IconContainer onPress={() => logoutUser()}>
+        <FontAwesomeIcon size={30} color="#fff" icon={faCircleArrowUp} />
+        <IconName>Logout</IconName>
       </IconContainer>
     </NavBarContainer>
   );

@@ -11,8 +11,22 @@ const AppContainer = styled(SafeAreaView)`
   width: 100%;
 `;
 
+const LoadingContainer = styled(SafeAreaView)`
+  flex-grow: 1;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+`;
+
 const AppNavigator = () => {
-  const { userToken } = useContext(UserStateContext);
+  const { userToken, isLoading } = useContext(UserStateContext);
+
+  if (isLoading)
+    return (
+      <LoadingContainer>
+        <ActivityIndicator />
+      </LoadingContainer>
+    );
 
   return (
     <NavigationContainer>
