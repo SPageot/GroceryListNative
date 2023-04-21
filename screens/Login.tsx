@@ -83,18 +83,18 @@ const PasswordRules = styled(Text)`
 
 const Login = () => {
   const [willRegister, setWillRegister] = useState<boolean>();
-  const { setUser } = useContext(UserStateContext);
+  const { loginUser } = useContext(UserStateContext);
   const [login, setLogin] = useState({
     name: "",
     email: "",
     password: "",
   });
   const [addUser, { error: registerError, reset }] = useMutation(ADD_USER);
-  const [userLogin, { data, error }] = useMutation(LOGIN_USER);
+  const [userLogin, { data, error, loading }] = useMutation(LOGIN_USER);
 
   useEffect(() => {
-    if (data && !_.isNull(data?.loginUser)) {
-      setUser(data.loginUser);
+    if (data && !_.isNull(data?.loginUser?.token)) {
+      loginUser(data.loginUser);
     }
   }, [data]);
 
@@ -106,12 +106,15 @@ const Login = () => {
     }
   }, [error]);
 
-  const handleNameChange = useCallback((text: string): void => {
-    if (text) {
-      setLogin({ ...login, name: text });
-      reset()
-    }
-  },[login.name]);
+  const handleNameChange = useCallback(
+    (text: string): void => {
+      if (text) {
+        setLogin({ ...login, name: text });
+        reset();
+      }
+    },
+    [login.name]
+  );
 
   const handleEmailChange = (text: string): void => {
     if (text) {

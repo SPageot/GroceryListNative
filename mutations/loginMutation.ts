@@ -78,16 +78,20 @@ const DELETE_GROCERYLIST = gql`
 const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $password: String!) {
     loginUser(email: $email, password: $password) {
-      id
-      name
-      email
-      groceryLists {
+      token
+      user {
         id
-        groceryList
-      }
-      reminders {
-        reminderHeader
-        reminder
+        name
+        email
+        reminders {
+          reminder
+          reminderHeader
+          id
+        }
+        groceryLists {
+          id
+          groceryList
+        }
       }
     }
   }
